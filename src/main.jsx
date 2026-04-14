@@ -16,7 +16,8 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        path: "home",
+        path: "/home",
+        loader: async ({ params }) => await fetch("/fridens.json"),
         Component: Home,
       },
       {
