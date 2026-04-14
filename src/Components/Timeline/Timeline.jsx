@@ -1,7 +1,6 @@
 import React from "react";
 import { useLoaderData } from "react-router";
 import { Users, MessageSquare, AlertCircle, ChevronDown } from "lucide-react";
-import Footer from "../Footer/Footer";
 
 const Timeline = () => {
   const timelineData = useLoaderData();

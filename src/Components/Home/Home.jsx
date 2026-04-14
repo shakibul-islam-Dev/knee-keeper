@@ -1,7 +1,6 @@
 import React from "react";
 import Nav from "../Navigation/Nav";
-import Footer from "../Footer/Footer";
-import { Outlet, useLoaderData } from "react-router";
+import { useLoaderData } from "react-router";
 import { IoMdAdd } from "react-icons/io";
 import Cards from "../Cards/Cards";
 

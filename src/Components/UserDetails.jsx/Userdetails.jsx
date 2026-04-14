@@ -9,7 +9,6 @@ import {
   LuMessageSquare,
   LuVideo,
 } from "react-icons/lu";
-import Footer from "../Footer/Footer";
 
 const UserDetails = () => {
   const userDetails = useLoaderData();
@@ -112,7 +111,6 @@ const UserDetails = () => {
           </div>
         </div>
       </div>
-      <Footer></Footer>
     </div>
   );
 };
