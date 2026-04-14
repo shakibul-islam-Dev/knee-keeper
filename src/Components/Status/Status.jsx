@@ -7,13 +7,14 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Status = () => {
   const users = useLoaderData();
+  console.log(users);
 
   const onTrack = users.filter((u) => u.status === "on-track").length;
   const overdue = users.filter((u) => u.status === "overdue").length;
   const almostDue = users.filter((u) => u.status === "almost due").length;
 
   const data = {
-    labels: ["On Track", "Overdue", "Almost Due"],
+    labels: ["Call", "Text", " Video"],
     datasets: [
       {
         data: [onTrack, overdue, almostDue],
