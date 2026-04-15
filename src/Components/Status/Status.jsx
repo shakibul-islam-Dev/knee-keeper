@@ -2,12 +2,10 @@ import React, { useContext } from "react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import { TimelineContext } from "../Root/Root";
-
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Status = () => {
   const { timelineData } = useContext(TimelineContext);
-
   const callCount = timelineData.filter((item) => item.type === "Call").length;
   const textCount = timelineData.filter((item) => item.type === "Text").length;
   const videoCount = timelineData.filter(

@@ -38,7 +38,7 @@ const Home = () => {
       {isLoading && (
         <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/70 backdrop-blur-[2px]">
           <span className="loading loading-spinner w-24 text-primary"></span>
-          <h2 className="mt-6 text-2xl font-bold text-primary animate-pulse">
+          <h2 className="mt-6 text-2xl z-50 font-bold text-primary animate-pulse">
             Loading Connections...
           </h2>
         </div>
