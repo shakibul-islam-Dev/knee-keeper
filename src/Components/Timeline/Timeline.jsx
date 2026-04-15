@@ -1,91 +1,101 @@
-import { useLoaderData, useNavigation } from "react-router";
-import { Phone, MessageSquare, Video, ChevronDown } from "lucide-react";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
+import React, { useContext, useState, useMemo } from "react";
+import { TimelineContext } from "../Root/Root";
+import { LuPhone, LuMessageSquare, LuVideo, LuFilter } from "react-icons/lu";
 
 const Timeline = () => {
-  const timelineData = useLoaderData();
-  const navigation = useNavigation();
+  const { timelineData } = useContext(TimelineContext);
 
-  const isLoading = navigation.state === "loading";
+  const [filter, setFilter] = useState("All");
 
-  const statusMap = {
-    "on-track": {
-      label: "Call",
-      icon: <Phone className="text-emerald-600" size={28} />,
-    },
-    overdue: {
-      label: "Text",
-      icon: <MessageSquare className="text-rose-500" size={28} />,
-    },
-    almost: {
-      label: "Video",
-      icon: <Video className="text-blue-500" size={28} />,
-    },
-  };
+  const filteredData = useMemo(() => {
+    if (filter === "All") return timelineData;
+    return timelineData.filter((item) => item.type === filter);
+  }, [timelineData, filter]);
+
+  const filterButtons = [
+    { label: "All", icon: <LuFilter />, color: "gray" },
+    { label: "Call", icon: <LuPhone />, color: "emerald" },
+    { label: "Text", icon: <LuMessageSquare />, color: "blue" },
+    { label: "Video", icon: <LuVideo />, color: "purple" },
+  ];
 
   return (
     <div className="p-8 container mx-auto max-w-2xl bg-white min-h-screen">
       <h1 className="text-5xl font-bold mb-8 text-[#111827]">Timeline</h1>
 
-      {/* Filter Bar */}
-      <div className="relative mb-10 max-w-xs">
-        <div className="flex items-center justify-between w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-400 bg-white">
-          <input
-            type="text"
-            placeholder="Filter here"
-            className="outline-none w-full"
-            disabled={isLoading}
-          />
-          <ChevronDown size={20} />
-        </div>
+      <div className="grid grid-cols-4 gap-3 mb-10">
+        {filterButtons.map((btn) => (
+          <button
+            key={btn.label}
+            onClick={() => setFilter(btn.label)}
+            className={`flex flex-col items-center gap-2 p-3 rounded-2xl border transition-all active:scale-95 ${
+              filter === btn.label
+                ? "bg-gray-900 text-white border-gray-900 shadow-md"
+                : "bg-gray-50 text-gray-600 border-gray-100 hover:border-gray-300"
+            }`}
+          >
+            <span className="text-xl">{btn.icon}</span>
+            <span className="text-xs font-bold">{btn.label}</span>
+          </button>
+        ))}
       </div>
 
-      <div className="space-y-4">
-        {isLoading
-          ? Array(5)
-              .fill(0)
-              .map((_, index) => (
+      <div className="relative border-l-2 border-emerald-100 ml-4 space-y-8">
+        {filteredData.length === 0 ? (
+          <div className="pl-8 text-gray-400 italic">
+            {filter !== "All"
+              ? `No ${filter} logs found.`
+              : "No activities logged yet."}
+          </div>
+        ) : (
+          filteredData.map((item) => (
+            <div key={item.id} className="relative pl-8 group">
+              <div className="absolute -left-3.25 top-4 bg-white p-1">
                 <div
-                  key={index}
-                  className="flex items-center gap-5 p-6 bg-white border border-gray-100 rounded-xl"
+                  className={`w-6 h-6 rounded-full border-4 border-white shadow-sm transition-transform group-hover:scale-125 ${
+                    item.type === "Call"
+                      ? "bg-emerald-500"
+                      : item.type === "Text"
+                        ? "bg-blue-500"
+                        : "bg-purple-500"
+                  }`}
+                ></div>
+              </div>
+
+              <div className="flex items-center gap-5 p-5 bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+                <div
+                  className={`p-3 rounded-xl text-2xl ${
+                    item.type === "Call"
+                      ? "bg-emerald-50 text-emerald-600"
+                      : item.type === "Text"
+                        ? "bg-blue-50 text-blue-600"
+                        : "bg-purple-50 text-purple-600"
+                  }`}
                 >
-                  <Skeleton circle width={44} height={44} />
-                  <div className="flex-1">
-                    <Skeleton width="60%" height={20} />
-                    <Skeleton width="30%" height={15} className="mt-2" />
+                  {item.type === "Call" && <LuPhone />}
+                  {item.type === "Text" && <LuMessageSquare />}
+                  {item.type === "Video" && <LuVideo />}
+                </div>
+
+                <div className="flex-1">
+                  <div className="text-lg">
+                    <span className="font-bold text-gray-800">{item.type}</span>
+                    <span className="text-gray-500 ml-2 italic text-sm text-opacity-70">
+                      with {item.userName}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-3 mt-1 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                    <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded italic">
+                      {item.timestamp}
+                    </span>
+                    <span>{item.date}</span>
                   </div>
                 </div>
-              ))
-          : timelineData?.map((item) => {
-              const config = statusMap[item.status] || {
-                label: "Video",
-                icon: <Video className="text-blue-500" size={28} />,
-              };
-
-              return (
-                <div
-                  key={item.id}
-                  className="flex items-center gap-5 p-6 bg-white border border-gray-100 rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:shadow-md transition-all cursor-pointer"
-                >
-                  <div className="p-2 bg-gray-50 rounded-lg">{config.icon}</div>
-
-                  <div className="flex-1">
-                    <div className="text-[1.1rem]">
-                      <span className="font-bold text-[#1a5d40] capitalize">
-                        {config.label}
-                      </span>{" "}
-                      <span className="text-gray-500 font-medium ml-1">
-                        with {item.name}
-                      </span>
-                    </div>
-                    <time className="text-sm font-semibold text-gray-400 mt-1 block">
-                      {item.next_due_date}
-                    </time>
-                  </div>
-                </div>
-              );
-            })}
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

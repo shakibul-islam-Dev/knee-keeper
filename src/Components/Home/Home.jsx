@@ -1,13 +1,12 @@
 import { useLoaderData, useNavigation } from "react-router";
 import { IoMdAdd } from "react-icons/io";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 import Cards from "../Cards/Cards";
 
 const Home = () => {
   const friendsData = useLoaderData();
   const navigation = useNavigation();
 
+  // Loading state check
   const isLoading = navigation.state === "loading";
 
   const stats = [
@@ -34,8 +33,22 @@ const Home = () => {
   ];
 
   return (
-    <>
-      <section>
+    <div className="relative min-h-screen">
+      {/* Boro Loading Overlay: Skeleton-er bodole eita pura screen cover korbe */}
+      {isLoading && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/70 backdrop-blur-[2px]">
+          <span className="loading loading-spinner w-24 text-primary"></span>
+          <h2 className="mt-6 text-2xl font-bold text-primary animate-pulse">
+            Loading Connections...
+          </h2>
+        </div>
+      )}
+
+      {/* Main Content Area */}
+      <section
+        className={isLoading ? "opacity-30 pointer-events-none" : "opacity-100"}
+      >
+        {/* Hero Section */}
         <div className="hero bg-base-200 mt-20">
           <div className="hero-content text-center">
             <div className="max-w-full">
@@ -44,7 +57,7 @@ const Home = () => {
               </h1>
               <p className="py-6 text-gray-600">
                 Your personal shelf of meaningful connections. Browse, tend, and
-                nurture the <br /> relationships that matter most.
+                nurture the relationships that matter most.
               </p>
               <button className="btn btn-primary" disabled={isLoading}>
                 <IoMdAdd /> Add a Friend
@@ -53,46 +66,31 @@ const Home = () => {
           </div>
         </div>
 
+        {/* Stats Section */}
         <div className="bg-gray-50 mt-10 p-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
             {stats.map((stat) => (
               <div
                 key={stat.id}
-                className="bg-white p-8 rounded-lg border border-gray-100 shadow-sm flex flex-col items-center justify-center text-center transition-all hover:shadow-md"
+                className="bg-white p-8 rounded-lg border border-gray-100 shadow-sm flex flex-col items-center justify-center text-center"
               >
                 <h2 className="text-4xl font-bold text-[#1a3a32] mb-2">
-                  {isLoading ? <Skeleton width={60} /> : stat.value}
+                  {stat.value}
                 </h2>
                 <p className="text-gray-500 font-medium text-sm lg:text-base">
-                  {isLoading ? <Skeleton width={100} /> : stat.label}
+                  {stat.label}
                 </p>
               </div>
             ))}
           </div>
         </div>
-      </section>
 
-      <div className="max-w-7xl mx-auto p-8">
-        {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className=" p-4 rounded-lg">
-              <Skeleton height={200} />
-              <Skeleton count={2} />
-            </div>
-            <div className=" p-4 rounded-lg">
-              <Skeleton height={200} />
-              <Skeleton count={2} />
-            </div>
-            <div className=" p-4 rounded-lg">
-              <Skeleton height={200} />
-              <Skeleton count={2} />
-            </div>
-          </div>
-        ) : (
+        {/* Cards Section */}
+        <div className="max-w-7xl mx-auto p-8">
           <Cards friendsData={friendsData} />
-        )}
-      </div>
-    </>
+        </div>
+      </section>
+    </div>
   );
 };
 
